@@ -1,0 +1,17 @@
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.csproj.AssemblyReference.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.GeneratedMSBuildEditorConfig.editorconfig
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.AssemblyInfoInputs.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.AssemblyInfo.cs
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.csproj.CoreCompileInputs.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Repository.deps.json
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Repository.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Repository.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Model.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/bin/Debug/net6.0/GameStatsAppImport.Model.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.csproj.CopyComplete
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/refint/GameStatsAppImport.Repository.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/GameStatsAppImport.Repository.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Repository/obj/Debug/net6.0/ref/GameStatsAppImport.Repository.dll

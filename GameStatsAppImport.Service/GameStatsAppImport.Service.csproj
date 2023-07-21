@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GameStatsAppImport.Model\GameStatsAppImport.Model.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Interfaces\GameStatsAppImport.Interfaces.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Repository\GameStatsAppImport.Repository.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Common\GameStatsAppImport.Common.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+  </ItemGroup>
+</Project>

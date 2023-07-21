@@ -1,0 +1,89 @@
+{
+  "version": 3,
+  "targets": {
+    "net6.0": {
+      "GameStatsAppImport.Model/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/GameStatsAppImport.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GameStatsAppImport.Model.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GameStatsAppImport.Model/1.0.0": {
+      "type": "project",
+      "path": "../GameStatsAppImport.Model/GameStatsAppImport.Model.csproj",
+      "msbuildProject": "../GameStatsAppImport.Model/GameStatsAppImport.Model.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net6.0": [
+      "GameStatsAppImport.Model >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "/Users/michaelmedick/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Interfaces/GameStatsAppImport.Interfaces.csproj",
+      "projectName": "GameStatsAppImport.Interfaces",
+      "projectPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Interfaces/GameStatsAppImport.Interfaces.csproj",
+      "packagesPath": "/Users/michaelmedick/.nuget/packages/",
+      "outputPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Interfaces/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/Users/michaelmedick/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net6.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "projectReferences": {
+            "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj": {
+              "projectPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net6.0": {
+        "targetAlias": "net6.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.408/RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

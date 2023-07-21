@@ -1,0 +1,17 @@
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunApp.Interfaces.deps.json
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunApp.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunApp.Model.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunCommon.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunApp.Model.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/bin/Debug/net6.0/SpeedRunCommon.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.csproj.AssemblyReference.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.GeneratedMSBuildEditorConfig.editorconfig
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.AssemblyInfoInputs.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.AssemblyInfo.cs
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.csproj.CoreCompileInputs.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.csproj.CopyComplete
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/refint/SpeedRunApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/SpeedRunApp.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Interfaces/obj/Debug/net6.0/ref/SpeedRunApp.Interfaces.dll

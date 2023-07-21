@@ -1,0 +1,16 @@
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Service.deps.json
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Service.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Service.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Model.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunCommon.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Model.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunApp.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/bin/Release/netcoreapp3.1/SpeedRunCommon.pdb
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.csprojAssemblyReference.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.AssemblyInfoInputs.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.AssemblyInfo.cs
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.csproj.CoreCompileInputs.cache
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.csproj.CopyComplete
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.dll
+/Users/michaelmedick/Documents/GITRepository/SpeedRunApp/SpeedRunApp.Service/obj/Release/netcoreapp3.1/SpeedRunApp.Service.pdb

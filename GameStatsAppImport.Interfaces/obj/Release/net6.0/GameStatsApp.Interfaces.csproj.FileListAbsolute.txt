@@ -1,0 +1,17 @@
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Interfaces.deps.json
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Common.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Model.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Model.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/bin/Release/net6.0/GameStatsApp.Common.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.csproj.AssemblyReference.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.GeneratedMSBuildEditorConfig.editorconfig
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.AssemblyInfoInputs.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.AssemblyInfo.cs
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.csproj.CoreCompileInputs.cache
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.csproj.CopyComplete
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/refint/GameStatsApp.Interfaces.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/GameStatsApp.Interfaces.pdb
+/Users/michaelmedick/Documents/GITRepository/GameStatsApp/GameStatsApp.Interfaces/obj/Release/net6.0/ref/GameStatsApp.Interfaces.dll

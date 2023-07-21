@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "GameStatsAppImport.Interfaces/1.0.0": {
+        "dependencies": {
+          "GameStatsAppImport.Model": "1.0.0"
+        },
+        "runtime": {
+          "GameStatsAppImport.Interfaces.dll": {}
+        }
+      },
+      "GameStatsAppImport.Model/1.0.0": {
+        "runtime": {
+          "GameStatsAppImport.Model.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GameStatsAppImport.Interfaces/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "GameStatsAppImport.Model/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
