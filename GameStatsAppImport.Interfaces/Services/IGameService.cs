@@ -5,6 +5,6 @@ namespace GameStatsAppImport.Interfaces.Services
 {
     public interface IGameService
     {
-        Task<bool> ProcessGames(DateTime lastImportDateUtc);
+        Task<bool> ProcessGames(DateTime lastImportDateUtc, bool isFullLoad);
     }
 }

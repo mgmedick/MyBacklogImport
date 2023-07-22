@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj": {}
+    "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Common/GameStatsAppImport.Common.csproj": {}
   },
   "projects": {
-    "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj": {
+    "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Common/GameStatsAppImport.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj",
-        "projectName": "GameStatsAppImport.Model",
-        "projectPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/GameStatsAppImport.Model.csproj",
+        "projectUniqueName": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Common/GameStatsAppImport.Common.csproj",
+        "projectName": "GameStatsAppImport.Common",
+        "projectPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Common/GameStatsAppImport.Common.csproj",
         "packagesPath": "/Users/michaelmedick/.nuget/packages/",
-        "outputPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Model/obj/",
+        "outputPath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Common/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/michaelmedick/.nuget/NuGet/NuGet.Config"
@@ -37,12 +37,6 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "dependencies": {
-            "Newtonsoft.Json": {
-              "target": "Package",
-              "version": "[13.0.3, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",

@@ -10,7 +10,11 @@ namespace GameStatsAppImport.Repository
     {
         public DataMappings()
         {
-            For<Game>().PrimaryKey("ID").TableName("tbl_Game");
+            For<Game>().PrimaryKey("ID").TableName("tbl_Game").Columns(i =>
+            {
+                i.Column(g => g.IGDBID).Ignore();
+            });
+            For<GameIGDBID>().PrimaryKey("GameID", false).TableName("tbl_Game_IGDBID");
             For<Setting>().PrimaryKey("ID").TableName("tbl_Setting");
         }
     }

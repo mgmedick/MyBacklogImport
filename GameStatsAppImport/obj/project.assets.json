@@ -2323,6 +2323,16 @@
           }
         }
       },
+      "GameStatsAppImport.Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v6.0",
+        "compile": {
+          "bin/placeholder/GameStatsAppImport.Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GameStatsAppImport.Common.dll": {}
+        }
+      },
       "GameStatsAppImport.Interfaces/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
@@ -2339,6 +2349,9 @@
       "GameStatsAppImport.Model/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.3"
+        },
         "compile": {
           "bin/placeholder/GameStatsAppImport.Model.dll": {}
         },
@@ -2353,7 +2366,8 @@
           "GameStatsAppImport.Interfaces": "1.0.0",
           "GameStatsAppImport.Model": "1.0.0",
           "MySql.Data": "8.0.32.1",
-          "NPoco": "5.7.1"
+          "NPoco": "5.7.1",
+          "Serilog.AspNetCore": "6.1.0"
         },
         "compile": {
           "bin/placeholder/GameStatsAppImport.Repository.dll": {}
@@ -2366,6 +2380,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v6.0",
         "dependencies": {
+          "GameStatsAppImport.Common": "1.0.0",
           "GameStatsAppImport.Interfaces": "1.0.0",
           "GameStatsAppImport.Model": "1.0.0",
           "GameStatsAppImport.Repository": "1.0.0",
@@ -6893,6 +6908,11 @@
         "useSharedDesignerContext.txt",
         "version.txt"
       ]
+    },
+    "GameStatsAppImport.Common/1.0.0": {
+      "type": "project",
+      "path": "../GameStatsAppImport.Common/GameStatsAppImport.Common.csproj",
+      "msbuildProject": "../GameStatsAppImport.Common/GameStatsAppImport.Common.csproj"
     },
     "GameStatsAppImport.Interfaces/1.0.0": {
       "type": "project",

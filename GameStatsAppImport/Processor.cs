@@ -51,7 +51,8 @@ namespace GameStatsAppImport
 
                 var currDateUtc = DateTime.UtcNow;
                 GameLastImportDateUtc = _settingService.GetSetting("GameLastImportDate")?.Dte ?? DateTime.MinValue;
-
+                IsFullLoad = GameLastImportDateUtc == DateTime.MinValue;
+                
                 BaseService.TwitchClientID = _config.GetSection("Auth").GetSection("Twitch").GetSection("ClientID").Value;
                 BaseService.TwitchAccessToken = await _authService.GetTwitchAccessToken();           
                 BaseService.BaseWebPath = _config.GetSection("AppSettings").GetSection("BaseWebPath").Value;
@@ -78,7 +79,7 @@ namespace GameStatsAppImport
             bool result = true;
             _logger.Information("Started RunProcesses");
 
-            result = await _gameService.ProcessGames(GameLastImportDateUtc);
+            result = await _gameService.ProcessGames(GameLastImportDateUtc, IsFullLoad);
 
             var currDateUtc = DateTime.UtcNow;
             _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
@@ -86,6 +87,7 @@ namespace GameStatsAppImport
         }
 
         public DateTime GameLastImportDateUtc { get; set; }
+        public bool IsFullLoad { get; set; }
     }
 }
 

@@ -9,6 +9,9 @@ namespace GameStatsAppImport.Interfaces.Repositories
     public interface IGameRepository
     {
         IEnumerable<Game> GetGames(Expression<Func<Game, bool>>  predicate);
+        IEnumerable<GameIGDBID> GetGameIGDBIDs(Expression<Func<GameIGDBID, bool>> predicate = null);
+        void InsertGames(IEnumerable<Game> games);
+        void SaveGames(IEnumerable<Game> games);
     }
 }
 

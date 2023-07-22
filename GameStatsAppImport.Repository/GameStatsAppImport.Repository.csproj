@@ -9,5 +9,6 @@
   <ItemGroup>
     <PackageReference Include="MySql.Data" Version="8.0.32.1"/>
     <PackageReference Include="NPoco" Version="5.7.1"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0"/>
   </ItemGroup>
 </Project>
