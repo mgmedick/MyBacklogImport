@@ -58,7 +58,7 @@ namespace GameStatsAppImport.Service
                         results.ClearMemory();
                     }
                 }
-                while (games.Count == BaseService.MaxPageLimit && games.Min(i => new DateTime(i.created_at, DateTimeKind.Utc) > lastImportDateUtc));                
+                while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => new DateTime(i.created_at, DateTimeKind.Utc) > lastImportDateUtc)));                
                 
                 if (!isFullLoad)
                 {
