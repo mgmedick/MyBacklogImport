@@ -17,3 +17,5 @@
 /Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Service/obj/Debug/net6.0/refint/GameStatsAppImport.Service.dll
 /Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Service/obj/Debug/net6.0/GameStatsAppImport.Service.pdb
 /Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Service/obj/Debug/net6.0/ref/GameStatsAppImport.Service.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Service/bin/Debug/net6.0/GameStatsAppImport.Common.dll
+/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Service/bin/Debug/net6.0/GameStatsAppImport.Common.pdb

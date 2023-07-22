@@ -5,12 +5,13 @@ using Microsoft.Extensions.Hosting;
 using Lamar.Microsoft.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using System.Threading.Tasks;
 
 namespace GameStatsAppImport
 {
-    public class Program
+    class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             Serilog.Debugging.SelfLog.Enable(Console.WriteLine);
@@ -18,7 +19,7 @@ namespace GameStatsAppImport
             {
                 var services = serviceScope.ServiceProvider;
                 var processor = services.GetRequiredService<Processor>();
-                processor.Run();
+                await processor.Run();
                 Log.CloseAndFlush();
             }
         }
@@ -51,6 +52,6 @@ namespace GameStatsAppImport
                         s.SingleImplementationsOfInterface();
                     });
                 })
-                .UseConsoleLifetime();
+                .UseConsoleLifetime();    
     }
 }

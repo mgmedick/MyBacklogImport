@@ -7,6 +7,7 @@ using GameStatsAppImport.Service;
 using GameStatsAppImport.Model.Data;
 using System.IO;
 using System.Data.SqlTypes;
+using System.Threading.Tasks;
 
 namespace GameStatsAppImport
 {
@@ -27,12 +28,12 @@ namespace GameStatsAppImport
             _logger = logger;
         }
 
-        public void Run()
+        public async Task Run()
         {
             try
             {
-                Init();
-                RunProcesses();
+                await Init();
+                await RunProcesses();
             }
             catch (Exception ex)
             {
@@ -40,7 +41,7 @@ namespace GameStatsAppImport
             }
         }
 
-        public async void Init()
+        public async Task Init()
         {
             try
             {
@@ -74,7 +75,7 @@ namespace GameStatsAppImport
             }
         }
 
-        public async void RunProcesses()
+        public async Task RunProcesses()
         {
             bool result = true;
             _logger.Information("Started RunProcesses");

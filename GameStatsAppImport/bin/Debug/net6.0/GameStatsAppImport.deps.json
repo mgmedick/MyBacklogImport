@@ -449,6 +449,14 @@
           "Microsoft.NETCore.Platforms": "3.1.0"
         }
       },
+      "Newtonsoft.Json/13.0.3": {
+        "runtime": {
+          "lib/net6.0/Newtonsoft.Json.dll": {
+            "assemblyVersion": "13.0.0.0",
+            "fileVersion": "13.0.3.27908"
+          }
+        }
+      },
       "NPoco/5.7.1": {
         "dependencies": {
           "System.Linq.Async": "5.0.0",
@@ -1206,6 +1214,11 @@
           }
         }
       },
+      "GameStatsAppImport.Common/1.0.0": {
+        "runtime": {
+          "GameStatsAppImport.Common.dll": {}
+        }
+      },
       "GameStatsAppImport.Interfaces/1.0.0": {
         "dependencies": {
           "GameStatsAppImport.Model": "1.0.0"
@@ -1224,7 +1237,8 @@
           "GameStatsAppImport.Interfaces": "1.0.0",
           "GameStatsAppImport.Model": "1.0.0",
           "MySql.Data": "8.0.32.1",
-          "NPoco": "5.7.1"
+          "NPoco": "5.7.1",
+          "Serilog.AspNetCore": "6.1.0"
         },
         "runtime": {
           "GameStatsAppImport.Repository.dll": {}
@@ -1232,9 +1246,11 @@
       },
       "GameStatsAppImport.Service/1.0.0": {
         "dependencies": {
+          "GameStatsAppImport.Common": "1.0.0",
           "GameStatsAppImport.Interfaces": "1.0.0",
           "GameStatsAppImport.Model": "1.0.0",
           "GameStatsAppImport.Repository": "1.0.0",
+          "Newtonsoft.Json": "13.0.3",
           "Serilog.AspNetCore": "6.1.0"
         },
         "runtime": {
@@ -1563,6 +1579,13 @@
       "sha512": "sha512-st47PosZSHrjECdjeIzZQbzivYBJFv6P2nv4cj2ypdI204DO+vZ7l5raGMiX4eXMJ53RfOIg+/s4DHVZ54Nu2A==",
       "path": "netstandard.library/2.0.3",
       "hashPath": "netstandard.library.2.0.3.nupkg.sha512"
+    },
+    "Newtonsoft.Json/13.0.3": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ==",
+      "path": "newtonsoft.json/13.0.3",
+      "hashPath": "newtonsoft.json.13.0.3.nupkg.sha512"
     },
     "NPoco/5.7.1": {
       "type": "package",
@@ -2172,6 +2195,11 @@
       "sha512": "sha512-CeWTdRNfRaSh0pm2gDTJFwVaXfTq6Xwv/sA887iwPTneW7oMtMlpvDIO+U60+3GWTB7Aom6oQwv5VZVUhQRdPQ==",
       "path": "system.windows.extensions/4.7.0",
       "hashPath": "system.windows.extensions.4.7.0.nupkg.sha512"
+    },
+    "GameStatsAppImport.Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "GameStatsAppImport.Interfaces/1.0.0": {
       "type": "project",

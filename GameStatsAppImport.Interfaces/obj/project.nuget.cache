@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "EB+kNaXFJ/CeiXrpckdGRL/F0/0ZWZzc98+G868aSspZPm/xLJ4H3WuI8ziy7VNJFC/AmOvmEJT5pUzBEqTvJw==",
+  "dgSpecHash": "F8+QjWj4CxzZS5Wn750X45a1GMdNI/UvrwBgNfqvHUWDyCCBAmaCxSIHvd52PntTBAXGftoZyi6BabbnegqwFA==",
   "success": true,
   "projectFilePath": "/Users/michaelmedick/Documents/GITRepository/GameStatsAppImport/GameStatsAppImport.Interfaces/GameStatsAppImport.Interfaces.csproj",
-  "expectedPackageFiles": [
-    "/Users/michaelmedick/.nuget/packages/newtonsoft.json/13.0.3/newtonsoft.json.13.0.3.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }
