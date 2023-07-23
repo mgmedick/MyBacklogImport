@@ -104,6 +104,22 @@ namespace GameStatsAppImport.Repository
             }
             _logger.Information("Completed SaveGames");
         }
+
+        public void UpdateGameCoverImages(IEnumerable<Game> games)
+        {
+            using (IDatabase db = DBFactory.GetDatabase())
+            {
+                using (var tran = db.GetTransaction())
+                {
+                    foreach (var game in games)
+                    {
+                        db.Update<Game>(game, i => new { i.CoverImagePath });
+                    }
+
+                    tran.Complete();
+                }
+            }
+        }        
     }
 }
 

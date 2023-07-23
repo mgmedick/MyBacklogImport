@@ -12,6 +12,7 @@ namespace GameStatsAppImport.Interfaces.Repositories
         IEnumerable<GameIGDBID> GetGameIGDBIDs(Expression<Func<GameIGDBID, bool>> predicate = null);
         void InsertGames(IEnumerable<Game> games);
         void SaveGames(IEnumerable<Game> games);
+        void UpdateGameCoverImages(IEnumerable<Game> games);
     }
 }
 

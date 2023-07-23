@@ -6,6 +6,7 @@ using GameStatsAppImport.Model.Data;
 using GameStatsAppImport.Common;
 using System.Collections.Generic;
 using Serilog;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
@@ -130,6 +131,8 @@ namespace GameStatsAppImport.Service
 
         public async void SaveGames(IEnumerable<GameResponse> gameResponses, bool isFullLoad)
         {
+            _logger.Information("Started SaveGames: {@Count}, {@IsFullLoad}", gameResponses.Count(), isFullLoad);
+
             gameResponses = gameResponses.GroupBy(g => new { g.id })
                          .Select(i => i.First())
                          .ToList();
@@ -158,6 +161,122 @@ namespace GameStatsAppImport.Service
             {
                 _gameRepo.SaveGames(games);
             }
+
+            await ProcessGameCoverImages(games);
+            _logger.Information("Completed SaveGames");
+        }
+
+        public async Task ProcessGameCoverImages(List<Game> games)
+        {
+            _logger.Information("Started ProcessGameCoverImages: {@Count}", games.Count);
+            games = games.Where(i => !string.IsNullOrWhiteSpace(i.CoverImageUrl)).ToList();
+            var tempGameCoverPaths = await GetGameCoverImages(games);
+            var gameCoverPaths = MoveGameCoverImages(tempGameCoverPaths);
+            ClearTempFolder();
+            SaveGameCoverImages(games, gameCoverPaths);
+            _logger.Information("Completed ProcessGameCoverImages");
+        }
+
+        public async Task<Dictionary<int, string>> GetGameCoverImages(List<Game> games)
+        {
+            _logger.Information("Started GetGameCoverImages: {@Count}", games.Count);
+            var tempGameCoverPaths = new Dictionary<int, string>();
+
+            int count = 1;
+            using (HttpClient client = new HttpClient())
+            {
+                foreach (var game in games)
+                {
+                    var fileName = string.Format("GameCover_{0}.{1}", game.IGDBID, ImageFileExt);
+                    var filePath = Path.Combine("/" + GameImageWebPath, fileName);
+                    if (!File.Exists(filePath))
+                    {
+                        var tempFilePath = Path.Combine(TempImportPath, fileName);
+                        try
+                        {
+                            using (var response = await client.GetAsync(game.CoverImageUrl))
+                            {
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    using (var fs = new FileStream(filePath, FileMode.CreateNew))
+                                    {
+                                        await response.Content.CopyToAsync(fs);
+                                    }
+                                }
+                                else
+                                {
+                                    //blah
+                                }
+                            }                       
+                            Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
+                        }
+                        catch (Exception ex)
+                        {
+                            Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
+                            _logger.Information(ex, "SetTempCoverImages");
+                            tempFilePath = null;
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(tempFilePath) && !tempGameCoverPaths.ContainsKey(game.ID))
+                        {
+                            tempGameCoverPaths.Add(game.ID, tempFilePath);
+                        }
+                    }
+                    else
+                    {
+                        game.CoverImagePath = filePath;
+                    }
+
+                    _logger.Information("Set gameImage {@Count} / {@Total}", count, games.Count);
+                    count++;
+                }
+            }
+
+            _logger.Information("Completed GetGameCoverImages");
+
+            return tempGameCoverPaths;
+        }
+
+        public Dictionary<int, string> MoveGameCoverImages(Dictionary<int, string> tempGameCoverPaths)
+        {
+            var gameCoverPaths = new Dictionary<int, string>();
+
+            foreach (var tempGameCoverPath in tempGameCoverPaths)
+            {
+                var fileName = Path.GetFileName(tempGameCoverPath.Value);
+                var destFilePath = Path.Combine(BaseWebPath, GameImageWebPath, fileName);
+                if (File.Exists(tempGameCoverPath.Value))
+                {
+                    File.Move(tempGameCoverPath.Value, destFilePath, true);
+                    var gameCoverPath = Path.Combine("/" + GameImageWebPath, fileName);
+                    gameCoverPaths.Add(tempGameCoverPath.Key, gameCoverPath);
+                }
+            }
+
+            return gameCoverPaths;
+        }
+
+        public void ClearTempFolder()
+        {
+            var di = new DirectoryInfo(TempImportPath);
+            foreach (FileInfo file in di.GetFiles())
+            {
+                file.Delete();
+            }
+        }       
+
+        public void SaveGameCoverImages(List<Game> games, Dictionary<int, string> gameCoverPaths)
+        {
+            foreach (var game in games)
+            {
+                if (gameCoverPaths.ContainsKey(game.ID))
+                {
+                    game.CoverImagePath = gameCoverPaths[game.ID];
+                }
+            }
+
+            games = games.Where(i => !string.IsNullOrWhiteSpace(i.CoverImagePath)).ToList();
+            _gameRepo.UpdateGameCoverImages(games);
         }
 
         public async Task SetGameCoverUrls(List<Game> games)
