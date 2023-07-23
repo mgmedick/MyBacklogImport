@@ -59,8 +59,9 @@ namespace GameStatsAppImport.Service
                         results.ClearMemory();
                     }
                 }
-                while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => new DateTime(i.created_at, DateTimeKind.Utc) > lastImportDateUtc)));                
-                
+                //while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => new DateTime(i.created_at, DateTimeKind.Utc) > lastImportDateUtc)));                
+                while (1 == 0);
+
                 if (!isFullLoad)
                 {
                     results.RemoveAll(i => new DateTime(i.created_at, DateTimeKind.Utc) <= lastImportDateUtc);
@@ -99,6 +100,7 @@ namespace GameStatsAppImport.Service
 
                 var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
+                    {"where", "category = 0;"},
                     {"sort", sort},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
@@ -126,45 +128,7 @@ namespace GameStatsAppImport.Service
             return data;
         }
 
-        public async Task<string> GetGameCoverUrl(int coverID, int retryCount = 0)
-        {
-            var data = string.Empty;
-
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Client-ID", BaseService.TwitchClientID);
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + BaseService.TwitchAccessToken);
-
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/covers");
-
-                var parameters = new Dictionary<string, object> {
-                    {"fields", "url;"},
-                    {"where", "id = " + coverID + ";"}
-                };
-                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
-
-                using (var response = await client.SendAsync(request))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var dataString = await response.Content.ReadAsStringAsync();
-                        data = JsonConvert.DeserializeObject<string>(dataString);
-                    }
-                    else if (retryCount <= BaseService.MaxRetryCount)
-                    {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
-                        retryCount++;
-                        _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount); 
-                        data = await GetGameCoverUrl(coverID, retryCount);                      
-                    }
-                }
-            }
-
-            return data;
-        }        
-
-        public void SaveGames(IEnumerable<GameResponse> gameResponses, bool isFullLoad)
+        public async void SaveGames(IEnumerable<GameResponse> gameResponses, bool isFullLoad)
         {
             gameResponses = gameResponses.GroupBy(g => new { g.id })
                          .Select(i => i.First())
@@ -179,9 +143,12 @@ namespace GameStatsAppImport.Service
             {
                 ID = gameIGDBIDs.Where(g => g.IGDBID == i.id).Select(g => g.GameID).FirstOrDefault(),
                 IGDBID = i.id,
+                CoverIGDBID = i.cover,
                 Name = i.name,
-                ReleaseDate = new DateTime(i.first_release_date, DateTimeKind.Utc),
+                ReleaseDate = new DateTime(i.first_release_date, DateTimeKind.Utc)
             }).ToList();
+
+            await SetGameCoverUrls(games);
 
             if (isFullLoad)
             {
@@ -192,6 +159,55 @@ namespace GameStatsAppImport.Service
                 _gameRepo.SaveGames(games);
             }
         }
+
+        public async Task SetGameCoverUrls(List<Game> games)
+        {
+            foreach(var game in games)
+            {
+                var imageID = await GetGameCoverImageID(game.CoverIGDBID);
+                game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", imageID);
+            }
+        }
+
+        public async Task<string> GetGameCoverImageID(int coverID, int retryCount = 0)
+        {
+            var result = string.Empty;
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Client-ID", BaseService.TwitchClientID);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + BaseService.TwitchAccessToken);
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/covers");
+
+                var parameters = new Dictionary<string, object> {
+                    {"fields", "image_id;"},
+                    {"where", "id = " + coverID + ";"}
+                };
+                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());          
+                request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
+
+                using (var response = await client.SendAsync(request))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var dataString = await response.Content.ReadAsStringAsync();
+                        var items = JArray.Parse(dataString);
+                        result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
+                    }
+                    else if (retryCount <= BaseService.MaxRetryCount)
+                    {
+                        Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
+                        retryCount++;
+                        _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount); 
+                        result = await GetGameCoverImageID(coverID, retryCount);                      
+                    }
+                }
+            }
+
+            return result;
+        }        
     }
 }
  

@@ -13,7 +13,5 @@ namespace GameStatsAppImport.Model.JSON
         public long first_release_date { get; set; }
         public int cover { get; set; }
         public long created_at { get; set; }
-        [JsonIgnoreAttribute]
-        public string coverUrl { get; set; }
     }  
 } 
