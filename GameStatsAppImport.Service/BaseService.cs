@@ -12,7 +12,7 @@ namespace GameStatsAppImport.Service
         public static string TwitchClientID { get; set; }
         public static string TwitchAccessToken { get; set; }
         public static int PullDelayMS { get; set; }
-        public static int ErrorPullDelayMS { get; set; }        
+        public static int ErrorPullDelayMS { get; set; }               
         public static int MaxPageLimit { get; set; }   
         public static int MaxRetryCount { get; set; }
         public static long MaxMemorySizeBytes { get; set; }

@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Linq;
+using System.IO;
 
 namespace GameStatsAppImport.Service
 {
@@ -96,13 +97,14 @@ namespace GameStatsAppImport.Service
 
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/games");
 
-                var parameters = new Dictionary<string, object> {
+                var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
                     {"sort", sort},
-                    {"limit", BaseService.MaxPageLimit},
-                    {"offset", offset}
+                    {"limit", BaseService.MaxPageLimit.ToString() + ";"},
+                    {"offset", offset.ToString() + ";"}
                 };
-                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());          
+                request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
 
                 using (var response = await client.SendAsync(request))
                 {

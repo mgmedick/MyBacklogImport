@@ -60,7 +60,11 @@ namespace GameStatsAppImport
                 BaseService.GameImageWebPath = _config.GetSection("AppSettings").GetSection("GameImageWebPath").Value;
                 BaseService.ImageFileExt = _config.GetSection("AppSettings").GetSection("ImageFileExt").Value;
                 BaseService.TempImportPath = _config.GetSection("AppSettings").GetSection("TempImportPath").Value;
-                BaseService.MaxPageLimit = Convert.ToInt32(_config.GetSection("ApiSettings").GetSection("MaxPageLimit").Value);
+                BaseService.MaxPageLimit = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("MaxPageLimit").Value);
+                BaseService.MaxMemorySizeBytes = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("MaxMemorySizeBytes").Value);                
+                BaseService.MaxRetryCount = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("MaxRetryCount").Value);                                
+                BaseService.PullDelayMS = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("PullDelayMS").Value);
+                BaseService.ErrorPullDelayMS = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("ErrorPullDelayMS").Value);
 
                 if (!Directory.Exists(BaseService.TempImportPath))
                 {
@@ -82,8 +86,8 @@ namespace GameStatsAppImport
 
             result = await _gameService.ProcessGames(GameLastImportDateUtc, IsFullLoad);
 
-            var currDateUtc = DateTime.UtcNow;
-            _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
+            // var currDateUtc = DateTime.UtcNow;
+            // _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
             _logger.Information("Completed RunProcesses");            
         }
 
