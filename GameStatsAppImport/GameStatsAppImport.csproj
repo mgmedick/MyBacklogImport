@@ -7,6 +7,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+<ItemGroup>
+   <None Update="appsettings.json">
+     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+   </None>
+</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\GameStatsAppImport.Interfaces\GameStatsAppImport.Interfaces.csproj"/>
     <ProjectReference Include="..\GameStatsAppImport.Repository\GameStatsAppImport.Repository.csproj"/>

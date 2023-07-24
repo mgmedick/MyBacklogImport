@@ -12,6 +12,7 @@ namespace GameStatsAppImport.Repository
         {
             For<Game>().PrimaryKey("ID").TableName("tbl_Game").Columns(i =>
             {
+                i.Column(g => g.CreatedDate).Ignore();
                 i.Column(g => g.IGDBID).Ignore();
                 i.Column(g => g.CoverIGDBID).Ignore();
             });

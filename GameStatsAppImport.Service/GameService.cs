@@ -151,7 +151,7 @@ namespace GameStatsAppImport.Service
                 ReleaseDate = new DateTime(i.first_release_date, DateTimeKind.Utc)
             }).ToList();
 
-            await SetGameCoverUrls(games);
+            SetGameCoverUrls(games);
 
             if (isFullLoad)
             {
@@ -279,11 +279,11 @@ namespace GameStatsAppImport.Service
             _gameRepo.UpdateGameCoverImages(games);
         }
 
-        public async Task SetGameCoverUrls(List<Game> games)
+        public void SetGameCoverUrls(List<Game> games)
         {
             foreach(var game in games)
             {
-                var imageID = await GetGameCoverImageID(game.CoverIGDBID);
+                var imageID = Task.Run(async () => await GetGameCoverImageID(game.CoverIGDBID)).Result;
                 game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", imageID);
             }
         }
@@ -311,7 +311,7 @@ namespace GameStatsAppImport.Service
                 {
                     if (response.IsSuccessStatusCode)
                     {
-                        var dataString = await response.Content.ReadAsStringAsync();
+                        var dataString = await response.Content.ReadAsStringAsync();                       
                         var items = JArray.Parse(dataString);
                         result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
                     }
@@ -319,7 +319,7 @@ namespace GameStatsAppImport.Service
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
                         retryCount++;
-                        _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount); 
+                        _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
                         result = await GetGameCoverImageID(coverID, retryCount);                      
                     }
                 }
