@@ -2,6 +2,7 @@
 using GameStatsAppImport.Interfaces.Services;
 using GameStatsAppImport.Model;
 using GameStatsAppImport.Model.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -20,5 +21,6 @@ namespace GameStatsAppImport.Service
         public static string BaseWebPath { get; set; }
         public static string GameImageWebPath { get; set; }
         public static string ImageFileExt { get; set; }
+        public static DateTime SqlMinDateTime { get; set; }
     }
 }

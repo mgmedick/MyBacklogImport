@@ -54,6 +54,14 @@ namespace GameStatsAppImport.Repository
                     using (var tran = db.GetTransaction())
                     {
                         db.InsertBatch<Game>(gamesBatch);
+                        var gameIDs = db.Query<int>("SELECT ID FROM tbl_Game ORDER BY ID DESC LIMIT @0;", gamesBatch.Count).Reverse().ToArray();
+                        for (int i = 0; i < gamesBatch.Count; i++)
+                        {
+                            gamesBatch[i].ID = gameIDs[i];
+                        }
+
+                        var gameIGDBIDBatch = gamesBatch.Select(i => new GameIGDBID { GameID = i.ID, IGDBID = i.IGDBID }).ToList();
+                        db.InsertBatch<GameIGDBID>(gameIGDBIDBatch);
                         tran.Complete();
                     }
 

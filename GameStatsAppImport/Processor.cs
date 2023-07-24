@@ -50,10 +50,12 @@ namespace GameStatsAppImport
                 var maxBulkRows = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("MaxBulkRows").Value);
                 NPocoBootstrapper.Configure(connString, maxBulkRows);
 
+                var sqlMinDateTime = (DateTime)SqlDateTime.MinValue;
                 var currDateUtc = DateTime.UtcNow;
-                GameLastImportDateUtc = _settingService.GetSetting("GameLastImportDate")?.Dte ?? DateTime.MinValue;
-                IsFullLoad = GameLastImportDateUtc == DateTime.MinValue;
-                
+                GameLastImportDateUtc = _settingService.GetSetting("GameLastImportDate")?.Dte ?? sqlMinDateTime;
+                IsFullLoad = _config.GetValue<bool>("IsFullLoad");
+
+                BaseService.SqlMinDateTime = sqlMinDateTime;
                 BaseService.TwitchClientID = _config.GetSection("Auth").GetSection("Twitch").GetSection("ClientID").Value;
                 BaseService.TwitchAccessToken = await _authService.GetTwitchAccessToken();           
                 BaseService.BaseWebPath = _config.GetSection("AppSettings").GetSection("BaseWebPath").Value;
@@ -87,8 +89,8 @@ namespace GameStatsAppImport
 
             result = await _gameService.ProcessGames(GameLastImportDateUtc, IsFullLoad);
 
-            // var currDateUtc = DateTime.UtcNow;
-            // _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
+            var currDateUtc = DateTime.UtcNow;
+            _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
             _logger.Information("Completed RunProcesses");            
         }
 

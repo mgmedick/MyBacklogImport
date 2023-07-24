@@ -60,18 +60,19 @@ namespace GameStatsAppImport.Service
                         results.ClearMemory();
                     }
                 }
-                //while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => new DateTime(i.created_at, DateTimeKind.Utc) > lastImportDateUtc)));                
+                //while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime) > lastImportDateUtc));                
                 while (1 == 0);
 
                 if (!isFullLoad)
                 {
-                    results.RemoveAll(i => new DateTime(i.created_at, DateTimeKind.Utc) <= lastImportDateUtc);
+                    results.RemoveAll(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime <= lastImportDateUtc);
+                    //results.RemoveAll(i => new DateTime(i.created_at, DateTimeKind.Utc) <= lastImportDateUtc);
                 }
 
                 if (results.Any())
                 {
                     SaveGames(results, isFullLoad);
-                    var lastUpdateDate = results.Max(i => new DateTime(i.created_at, DateTimeKind.Utc));
+                    var lastUpdateDate = results.Max(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime);
                     _settingService.UpdateSetting("GameLastImportDate", lastUpdateDate);
                     results.ClearMemory();
                 }
@@ -111,17 +112,25 @@ namespace GameStatsAppImport.Service
 
                 using (var response = await client.SendAsync(request))
                 {
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
+                        response.EnsureSuccessStatusCode();
                         var dataString = await response.Content.ReadAsStringAsync();
                         data = JsonConvert.DeserializeObject<List<GameResponse>>(dataString);
                     }
-                    else if (retryCount <= BaseService.MaxRetryCount)
+                    catch (Exception ex)
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
                         retryCount++;
-                        _logger.Information("Retrying pull games: {@New}, total games: {@Total}, retry: {@RetryCount}", BaseService.MaxPageLimit, offset, retryCount); 
-                        data = await GetGameResponses(sort, offset, retryCount);                      
+                        if (retryCount <= BaseService.MaxRetryCount)
+                        {
+                            _logger.Information("Retrying pull games: {@New}, total games: {@Total}, retry: {@RetryCount}", BaseService.MaxPageLimit, offset, retryCount);
+                            data = await GetGameResponses(sort, offset, retryCount);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
             }
@@ -129,7 +138,7 @@ namespace GameStatsAppImport.Service
             return data;
         }
 
-        public async void SaveGames(IEnumerable<GameResponse> gameResponses, bool isFullLoad)
+        public void SaveGames(IEnumerable<GameResponse> gameResponses, bool isFullLoad)
         {
             _logger.Information("Started SaveGames: {@Count}, {@IsFullLoad}", gameResponses.Count(), isFullLoad);
 
@@ -148,7 +157,7 @@ namespace GameStatsAppImport.Service
                 IGDBID = i.id,
                 CoverIGDBID = i.cover,
                 Name = i.name,
-                ReleaseDate = new DateTime(i.first_release_date, DateTimeKind.Utc)
+                ReleaseDate = DateTimeOffset.FromUnixTimeSeconds(i.first_release_date).UtcDateTime
             }).ToList();
 
             SetGameCoverUrls(games);
@@ -162,15 +171,15 @@ namespace GameStatsAppImport.Service
                 _gameRepo.SaveGames(games);
             }
 
-            await ProcessGameCoverImages(games);
+            ProcessGameCoverImages(games);
             _logger.Information("Completed SaveGames");
         }
 
-        public async Task ProcessGameCoverImages(List<Game> games)
+        public void ProcessGameCoverImages(List<Game> games)
         {
             _logger.Information("Started ProcessGameCoverImages: {@Count}", games.Count);
             games = games.Where(i => !string.IsNullOrWhiteSpace(i.CoverImageUrl)).ToList();
-            var tempGameCoverPaths = await GetGameCoverImages(games);
+            var tempGameCoverPaths = Task.Run(async () => await GetGameCoverImages(games)).Result;
             var gameCoverPaths = MoveGameCoverImages(tempGameCoverPaths);
             ClearTempFolder();
             SaveGameCoverImages(games, gameCoverPaths);
@@ -188,7 +197,7 @@ namespace GameStatsAppImport.Service
                 foreach (var game in games)
                 {
                     var fileName = string.Format("GameCover_{0}.{1}", game.IGDBID, ImageFileExt);
-                    var filePath = Path.Combine("/" + GameImageWebPath, fileName);
+                    var filePath = Path.Combine("/" + BaseService.GameImageWebPath, fileName);
                     if (!File.Exists(filePath))
                     {
                         var tempFilePath = Path.Combine(TempImportPath, fileName);
@@ -196,24 +205,18 @@ namespace GameStatsAppImport.Service
                         {
                             using (var response = await client.GetAsync(game.CoverImageUrl))
                             {
-                                if (response.IsSuccessStatusCode)
+                                response.EnsureSuccessStatusCode();
+                                using (var fs = new FileStream(tempFilePath, FileMode.CreateNew))
                                 {
-                                    using (var fs = new FileStream(filePath, FileMode.CreateNew))
-                                    {
-                                        await response.Content.CopyToAsync(fs);
-                                    }
+                                    await response.Content.CopyToAsync(fs);
                                 }
-                                else
-                                {
-                                    //blah
-                                }
-                            }                       
+                            }
                             Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
                         }
                         catch (Exception ex)
                         {
                             Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
-                            _logger.Information(ex, "SetTempCoverImages");
+                            _logger.Information(ex, "GetGameCoverImages");
                             tempFilePath = null;
                         }
 
@@ -309,18 +312,26 @@ namespace GameStatsAppImport.Service
 
                 using (var response = await client.SendAsync(request))
                 {
-                    if (response.IsSuccessStatusCode)
+                    try
                     {
-                        var dataString = await response.Content.ReadAsStringAsync();                       
+                        response.EnsureSuccessStatusCode();
+                        var dataString = await response.Content.ReadAsStringAsync();
                         var items = JArray.Parse(dataString);
                         result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
                     }
-                    else if (retryCount <= BaseService.MaxRetryCount)
+                    catch (Exception ex)
                     {
                         Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
                         retryCount++;
-                        _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
-                        result = await GetGameCoverImageID(coverID, retryCount);                      
+                        if (retryCount <= BaseService.MaxRetryCount)
+                        {
+                            _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
+                            result = await GetGameCoverImageID(coverID, retryCount);
+                        }
+                        else
+                        {
+                            throw;
+                        }
                     }
                 }
             }
