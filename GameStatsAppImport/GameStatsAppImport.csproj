@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GameStatsAppImport.Interfaces\GameStatsAppImport.Interfaces.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Repository\GameStatsAppImport.Repository.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Service\GameStatsAppImport.Service.csproj"/>
+    <ProjectReference Include="..\GameStatsAppImport.Model\GameStatsAppImport.Model.csproj"/>
+  </ItemGroup>  
+
+  <ItemGroup>
+    <PackageReference Include="Lamar" Version="11.1.2"/>
+    <PackageReference Include="Lamar.Microsoft.DependencyInjection" Version="11.1.2"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1"/>
+    <PackageReference Include="Serilog.AspNetCore" Version="6.1.0"/>
+    <PackageReference Include="Serilog.Sinks.Email" Version="2.4.0"/>
+  </ItemGroup>
+
+
+</Project>
