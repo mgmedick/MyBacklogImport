@@ -60,13 +60,12 @@ namespace GameStatsAppImport.Service
                         results.ClearMemory();
                     }
                 }
-                //while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime) > lastImportDateUtc));                
-                while (1 == 0);
+                while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime) > lastImportDateUtc));                
+                //while (1 == 0);
 
                 if (!isFullLoad)
                 {
                     results.RemoveAll(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime <= lastImportDateUtc);
-                    //results.RemoveAll(i => new DateTime(i.created_at, DateTimeKind.Utc) <= lastImportDateUtc);
                 }
 
                 if (results.Any())
@@ -102,7 +101,6 @@ namespace GameStatsAppImport.Service
 
                 var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
-                    {"where", "category = 0;"},
                     {"sort", sort},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
