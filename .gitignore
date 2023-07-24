@@ -339,6 +339,8 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-/GameStatsApp/logs
+/GameStatsAppImport/logs
 .DS_Store
-
+GameStatsAppImport.Common/.DS_Store
+GameStatsAppImport.Interfaces/.DS_Store
+GameStatsAppImport.Model/.DS_Store
