@@ -16,6 +16,7 @@ using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Linq;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace GameStatsAppImport.Service
 {
@@ -101,10 +102,11 @@ namespace GameStatsAppImport.Service
 
                 var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
-                    {"sort", sort},
+                    //{"sort", sort},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
                 };
+
                 var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());          
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
 
@@ -173,6 +175,80 @@ namespace GameStatsAppImport.Service
             _logger.Information("Completed SaveGames");
         }
 
+        public void SetGameCoverUrls(List<Game> games)
+        {
+            _logger.Information("Started GetGameCoverImages: {@Count}", games.Count);
+
+            int count = 0;
+            var imageID = string.Empty;
+            foreach (var game in games)
+            {
+                try
+                {
+                    imageID = Task.Run(async () => await GetGameCoverImageID(game.CoverIGDBID)).Result;
+                    Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
+                    game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", imageID);
+                    count++;
+                    _logger.Information("Set cover games: {@New}, total games: {@Total}", count, games.Count);
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex, "SetGameCoverUrls GameID: {@GameID}, CoverIGDBID: {@CoverIGDBID}", game.ID, game.CoverIGDBID);
+                }
+            }
+
+            _logger.Information("Completed SetGameCoverUrls");
+
+        }
+
+        public async Task<string> GetGameCoverImageID(int coverID, int retryCount = 0)
+        {
+            var result = string.Empty;
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                client.DefaultRequestHeaders.Add("Client-ID", BaseService.TwitchClientID);
+                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + BaseService.TwitchAccessToken);
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/covers");
+
+                var parameters = new Dictionary<string, object> {
+                    {"fields", "image_id;"},
+                    {"where", "id = " + coverID + ";"}
+                };
+                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
+                request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
+
+                using (var response = await client.SendAsync(request))
+                {
+                    try
+                    {
+                        response.EnsureSuccessStatusCode();
+                        var dataString = await response.Content.ReadAsStringAsync();
+                        var items = JArray.Parse(dataString);
+                        result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
+                    }
+                    catch (Exception ex)
+                    {
+                        Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
+                        retryCount++;
+                        if (retryCount <= BaseService.MaxRetryCount)
+                        {
+                            _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
+                            result = await GetGameCoverImageID(coverID, retryCount);
+                        }
+                        else
+                        {
+                            throw;
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         public void ProcessGameCoverImages(List<Game> games)
         {
             _logger.Information("Started ProcessGameCoverImages: {@Count}", games.Count);
@@ -189,7 +265,7 @@ namespace GameStatsAppImport.Service
             _logger.Information("Started GetGameCoverImages: {@Count}", games.Count);
             var tempGameCoverPaths = new Dictionary<int, string>();
 
-            int count = 1;
+            var count = 0;
             using (HttpClient client = new HttpClient())
             {
                 foreach (var game in games)
@@ -228,8 +304,8 @@ namespace GameStatsAppImport.Service
                         game.CoverImagePath = filePath;
                     }
 
-                    _logger.Information("Set gameImage {@Count} / {@Total}", count, games.Count);
                     count++;
+                    _logger.Information("Set gameImage {@Count} / {@Total}", count, games.Count);
                 }
             }
 
@@ -240,8 +316,11 @@ namespace GameStatsAppImport.Service
 
         public Dictionary<int, string> MoveGameCoverImages(Dictionary<int, string> tempGameCoverPaths)
         {
+            _logger.Information("Started MoveGameCoverImages: {@Count}", tempGameCoverPaths.Count);
+
             var gameCoverPaths = new Dictionary<int, string>();
 
+            var count = 0;
             foreach (var tempGameCoverPath in tempGameCoverPaths)
             {
                 var fileName = Path.GetFileName(tempGameCoverPath.Value);
@@ -252,7 +331,11 @@ namespace GameStatsAppImport.Service
                     var gameCoverPath = Path.Combine("/" + GameImageWebPath, fileName);
                     gameCoverPaths.Add(tempGameCoverPath.Key, gameCoverPath);
                 }
+                count++;
+                _logger.Information("Moved gameImage {@Count} / {@Total}", count, tempGameCoverPaths.Count);
             }
+
+            _logger.Information("Completed MoveGameCoverImages");
 
             return gameCoverPaths;
         }
@@ -268,6 +351,8 @@ namespace GameStatsAppImport.Service
 
         public void SaveGameCoverImages(List<Game> games, Dictionary<int, string> gameCoverPaths)
         {
+            _logger.Information("Started SaveGameCoverImages: {@Count}", games.Count);
+
             foreach (var game in games)
             {
                 if (gameCoverPaths.ContainsKey(game.ID))
@@ -278,64 +363,9 @@ namespace GameStatsAppImport.Service
 
             games = games.Where(i => !string.IsNullOrWhiteSpace(i.CoverImagePath)).ToList();
             _gameRepo.UpdateGameCoverImages(games);
+
+            _logger.Information("Completed SaveGameCoverImages");
         }
-
-        public void SetGameCoverUrls(List<Game> games)
-        {
-            foreach(var game in games)
-            {
-                var imageID = Task.Run(async () => await GetGameCoverImageID(game.CoverIGDBID)).Result;
-                game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", imageID);
-            }
-        }
-
-        public async Task<string> GetGameCoverImageID(int coverID, int retryCount = 0)
-        {
-            var result = string.Empty;
-
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                client.DefaultRequestHeaders.Add("Client-ID", BaseService.TwitchClientID);
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + BaseService.TwitchAccessToken);
-
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/covers");
-
-                var parameters = new Dictionary<string, object> {
-                    {"fields", "image_id;"},
-                    {"where", "id = " + coverID + ";"}
-                };
-                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());          
-                request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
-
-                using (var response = await client.SendAsync(request))
-                {
-                    try
-                    {
-                        response.EnsureSuccessStatusCode();
-                        var dataString = await response.Content.ReadAsStringAsync();
-                        var items = JArray.Parse(dataString);
-                        result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
-                    }
-                    catch (Exception ex)
-                    {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
-                        retryCount++;
-                        if (retryCount <= BaseService.MaxRetryCount)
-                        {
-                            _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
-                            result = await GetGameCoverImageID(coverID, retryCount);
-                        }
-                        else
-                        {
-                            throw;
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }        
     }
 }
  
