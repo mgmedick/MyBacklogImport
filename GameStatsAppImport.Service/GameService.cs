@@ -17,6 +17,8 @@ using System.Threading;
 using System.Linq;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using GameStatsAppImport.Repository;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GameStatsAppImport.Service
 {
@@ -107,7 +109,7 @@ namespace GameStatsAppImport.Service
                     {"offset", offset.ToString() + ";"}
                 };
 
-                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());          
+                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
 
                 using (var response = await client.SendAsync(request))
@@ -146,7 +148,7 @@ namespace GameStatsAppImport.Service
                          .Select(i => i.First())
                          .ToList();
 
-            gameResponses = gameResponses.OrderBy(i => i.created_at).ToList();
+            gameResponses = gameResponses.OrderBy(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime).ToList();
             var gameIDs = gameResponses.Select(i => i.id).ToList();
             var gameIGDBIDs = _gameRepo.GetGameIGDBIDs();
             gameIGDBIDs = gameIGDBIDs.Join(gameIDs, o => o.IGDBID, id => id, (o, id) => o).ToList();
@@ -175,35 +177,50 @@ namespace GameStatsAppImport.Service
             _logger.Information("Completed SaveGames");
         }
 
+
         public void SetGameCoverUrls(List<Game> games)
         {
-            _logger.Information("Started GetGameCoverImages: {@Count}", games.Count);
+            _logger.Information("Started SetGameCoverUrls: {@Count}", games.Count);
+            var gamesWithCovers = games.Where(i => i.CoverIGDBID > 0).OrderBy(i => i.IGDBID).ToList();
+            var covers = Task.Run(async () => await GetGameCovers(gamesWithCovers)).Result;
 
-            int count = 0;
-            var imageID = string.Empty;
             foreach (var game in games)
             {
-                try
+                var cover = covers.FirstOrDefault(i => i.game == game.IGDBID);
+                if (cover != null)
                 {
-                    imageID = Task.Run(async () => await GetGameCoverImageID(game.CoverIGDBID)).Result;
-                    Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
-                    game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", imageID);
-                    count++;
-                    _logger.Information("Set cover games: {@New}, total games: {@Total}", count, games.Count);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex, "SetGameCoverUrls GameID: {@GameID}, CoverIGDBID: {@CoverIGDBID}", game.ID, game.CoverIGDBID);
+                    game.CoverImageUrl = string.Format("https://images.igdb.com/igdb/image/upload/t_cover_big/{0}.jpg", cover.image_id);
                 }
             }
 
             _logger.Information("Completed SetGameCoverUrls");
-
         }
 
-        public async Task<string> GetGameCoverImageID(int coverID, int retryCount = 0)
+        public async Task<List<CoverResponse>> GetGameCovers(List<Game> games)
         {
-            var result = string.Empty;
+            _logger.Information("Started GetGameCovers: {@Count}", games.Count);
+            var results = new List<CoverResponse>();
+            var covers = new List<CoverResponse>();
+
+            int batchCount = 0;
+            while (batchCount < games.Count)
+            {
+                var coverIGDBIDsBatch = games.Skip(batchCount).Take(BaseService.MaxPageLimit).Select(i => i.CoverIGDBID).ToList();
+                covers = await GetCoverResponses(coverIGDBIDsBatch);
+                Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
+                results.AddRange(covers);
+
+                _logger.Information("Pulled covers: {@New}, total games: {@Total}", covers.Count, results.Count);
+                batchCount += BaseService.MaxPageLimit;
+            }
+
+            _logger.Information("Completed GetGameCovers");
+            return results;
+        }
+
+        public async Task<List<CoverResponse>> GetCoverResponses(List<int> coverIGDBIDs, int retryCount = 0)
+        {
+            var data = new List<CoverResponse>();
 
             using (HttpClient client = new HttpClient())
             {
@@ -214,8 +231,8 @@ namespace GameStatsAppImport.Service
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/covers");
 
                 var parameters = new Dictionary<string, object> {
-                    {"fields", "image_id;"},
-                    {"where", "id = " + coverID + ";"}
+                    {"fields", "game,image_id;"},
+                    {"where", "id = (" + string.Join(",", coverIGDBIDs) + ");"}
                 };
                 var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
@@ -226,8 +243,7 @@ namespace GameStatsAppImport.Service
                     {
                         response.EnsureSuccessStatusCode();
                         var dataString = await response.Content.ReadAsStringAsync();
-                        var items = JArray.Parse(dataString);
-                        result = items.Select(obj => (string)obj["image_id"]).FirstOrDefault();
+                        data = JsonConvert.DeserializeObject<List<CoverResponse>>(dataString);
                     }
                     catch (Exception ex)
                     {
@@ -235,8 +251,8 @@ namespace GameStatsAppImport.Service
                         retryCount++;
                         if (retryCount <= BaseService.MaxRetryCount)
                         {
-                            _logger.Information("Retrying pull cover: {@New}, total games: {@Total}, retry: {@RetryCount}", coverID, retryCount);
-                            result = await GetGameCoverImageID(coverID, retryCount);
+                            _logger.Information("Retrying pull cover: {@New}, total covers: {@Total}, retry: {@RetryCount}", coverIGDBIDs.Count, retryCount);
+                            data = await GetCoverResponses(coverIGDBIDs, retryCount);
                         }
                         else
                         {
@@ -246,7 +262,7 @@ namespace GameStatsAppImport.Service
                 }
             }
 
-            return result;
+            return data;
         }
 
         public void ProcessGameCoverImages(List<Game> games)
