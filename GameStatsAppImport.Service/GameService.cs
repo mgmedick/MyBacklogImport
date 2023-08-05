@@ -104,7 +104,7 @@ namespace GameStatsAppImport.Service
 
                 var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
-                    //{"sort", sort},
+                    {"sort", sort},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
                 };
@@ -232,7 +232,8 @@ namespace GameStatsAppImport.Service
 
                 var parameters = new Dictionary<string, object> {
                     {"fields", "game,image_id;"},
-                    {"where", "id = (" + string.Join(",", coverIGDBIDs) + ");"}
+                    {"where", "id = (" + string.Join(",", coverIGDBIDs) + ");"},
+                    {"limit", coverIGDBIDs.Count().ToString() + ";"}
                 };
                 var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
