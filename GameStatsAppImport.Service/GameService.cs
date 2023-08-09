@@ -105,6 +105,7 @@ namespace GameStatsAppImport.Service
                 var parameters = new Dictionary<string, string> {
                     {"fields", "name,first_release_date,cover,created_at;"},
                     {"sort", sort},
+                    {"where", "category < 11"},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
                 };
