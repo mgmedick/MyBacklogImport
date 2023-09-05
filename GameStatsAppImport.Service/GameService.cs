@@ -103,9 +103,8 @@ namespace GameStatsAppImport.Service
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://api.igdb.com/v4/games");
 
                 var parameters = new Dictionary<string, string> {
-                    {"fields", "name,first_release_date,cover,created_at;"},
+                    {"fields", "name,category,first_release_date,cover,created_at;"},
                     {"sort", sort},
-                    {"where", "category < 11"},
                     {"limit", BaseService.MaxPageLimit.ToString() + ";"},
                     {"offset", offset.ToString() + ";"}
                 };
@@ -113,29 +112,30 @@ namespace GameStatsAppImport.Service
                 var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
 
-                using (var response = await client.SendAsync(request))
+                try
                 {
-                    try
+                    using (var response = await client.SendAsync(request))
                     {
                         response.EnsureSuccessStatusCode();
                         var dataString = await response.Content.ReadAsStringAsync();
                         data = JsonConvert.DeserializeObject<List<GameResponse>>(dataString);
                     }
-                    catch (Exception ex)
+                }
+                catch (Exception ex)
+                {
+                    Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
+                    retryCount++;
+                    if (retryCount <= BaseService.MaxRetryCount)
                     {
-                        Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
-                        retryCount++;
-                        if (retryCount <= BaseService.MaxRetryCount)
-                        {
-                            _logger.Information("Retrying pull games: {@New}, total games: {@Total}, retry: {@RetryCount}", BaseService.MaxPageLimit, offset, retryCount);
-                            data = await GetGameResponses(sort, offset, retryCount);
-                        }
-                        else
-                        {
-                            throw;
-                        }
+                        _logger.Information("Retrying pull games: {@New}, total games: {@Total}, retry: {@RetryCount}", BaseService.MaxPageLimit, offset, retryCount);
+                        data = await GetGameResponses(sort, offset, retryCount);
+                    }
+                    else
+                    {
+                        throw;
                     }
                 }
+                
             }
 
             return data;
@@ -160,6 +160,7 @@ namespace GameStatsAppImport.Service
                 IGDBID = i.id,
                 CoverIGDBID = i.cover,
                 Name = i.name,
+                GameCategoryID = i.category,
                 ReleaseDate = DateTimeOffset.FromUnixTimeSeconds(i.first_release_date).UtcDateTime
             }).ToList();
 
