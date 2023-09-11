@@ -161,7 +161,7 @@ namespace GameStatsAppImport.Service
                 CoverIGDBID = i.cover,
                 Name = i.name,
                 GameCategoryID = i.category,
-                ReleaseDate = DateTimeOffset.FromUnixTimeSeconds(i.first_release_date).UtcDateTime
+                ReleaseDate = i.first_release_date.HasValue ? DateTimeOffset.FromUnixTimeSeconds(i.first_release_date.Value).UtcDateTime : (DateTime?)null
             }).ToList();
 
             SetGameCoverUrls(games);
@@ -291,7 +291,9 @@ namespace GameStatsAppImport.Service
                 {
                     var fileName = string.Format("GameCover_{0}.{1}", game.IGDBID, ImageFileExt);
                     var filePath = Path.Combine("/" + BaseService.GameImageWebPath, fileName);
-                    if (!File.Exists(filePath))
+                    var destFilePath = Path.Combine(BaseService.BaseWebPath, BaseService.GameImageWebPath, fileName);
+
+                    if (!File.Exists(destFilePath))
                     {
                         var tempFilePath = Path.Combine(TempImportPath, fileName);
                         try
@@ -343,11 +345,11 @@ namespace GameStatsAppImport.Service
             foreach (var tempGameCoverPath in tempGameCoverPaths)
             {
                 var fileName = Path.GetFileName(tempGameCoverPath.Value);
-                var destFilePath = Path.Combine(BaseWebPath, GameImageWebPath, fileName);
+                var destFilePath = Path.Combine(BaseService.BaseWebPath, BaseService.GameImageWebPath, fileName);
                 if (File.Exists(tempGameCoverPath.Value))
                 {
                     File.Move(tempGameCoverPath.Value, destFilePath, true);
-                    var gameCoverPath = Path.Combine("/" + GameImageWebPath, fileName);
+                    var gameCoverPath = Path.Combine("/" + BaseService.GameImageWebPath, fileName);
                     gameCoverPaths.Add(tempGameCoverPath.Key, gameCoverPath);
                 }
                 count++;
