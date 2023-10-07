@@ -14,14 +14,16 @@ namespace GameStatsAppImport
     public class Processor
     {
         private readonly IGameService _gameService;
+        private readonly IUserService _userService;
         private readonly IAuthService _authService;
         private readonly ISettingService _settingService;
         private readonly IConfiguration _config;
         private readonly ILogger _logger;
         
-        public Processor(IGameService gameService, IAuthService authService, ISettingService settingService, IConfiguration config, ILogger logger)
+        public Processor(IGameService gameService, IUserService userService, IAuthService authService, ISettingService settingService, IConfiguration config, ILogger logger)
         {
             _gameService = gameService;
+            _userService = userService;
             _authService = authService;
             _settingService = settingService;
             _config = config;
@@ -88,6 +90,7 @@ namespace GameStatsAppImport
             _logger.Information("Started RunProcesses");
 
             result = await _gameService.ProcessGames(GameLastImportDateUtc, IsFullLoad);
+            result = _userService.DeleteDemoUsers();
 
             var currDateUtc = DateTime.UtcNow;
             _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
