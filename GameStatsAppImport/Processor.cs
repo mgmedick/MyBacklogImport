@@ -90,7 +90,11 @@ namespace GameStatsAppImport
             _logger.Information("Started RunProcesses");
 
             result = await _gameService.ProcessGames(GameLastImportDateUtc, IsFullLoad);
-            result = _userService.DeleteDemoUsers();
+
+            if (result)
+            {
+                result = _userService.DeleteDemoUsers();
+            }
 
             var currDateUtc = DateTime.UtcNow;
             _settingService.UpdateSetting("ImportLastRunDate", currDateUtc);
