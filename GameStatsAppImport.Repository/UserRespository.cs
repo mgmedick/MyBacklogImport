@@ -48,6 +48,22 @@ namespace GameStatsAppImport.Repository
 
             _logger.Information("Completed SaveUsers");
         }
+
+        public void ResetDemoDB()
+        {
+            _logger.Information("Started ResetDemoDB");
+
+            using (IDatabase db = DemoDBFactory.GetDatabase())
+            {
+                using (var tran = db.GetTransaction())
+                {
+                    db.Execute("CALL ResetDemoDB;");
+                    tran.Complete();
+                }
+            }
+
+            _logger.Information("Completed ResetDemoDB");
+        }
     }
 }
 

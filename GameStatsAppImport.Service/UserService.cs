@@ -39,31 +39,20 @@ namespace GameStatsAppImport.Service
             _logger = logger;
         }
 
-        public bool DeleteDemoUsers()
+        public bool ResetDemo()
         {
             bool result = true;
 
             try
             {
-                _logger.Information("Started DeleteDemoUsers");
-                var emailDomain = _config.GetSection("SiteSettings").GetSection("EmailDomain").Value;
-                var users = _userRepo.GetUsers(i => i.Email.EndsWith("demo@" + emailDomain) && !i.Deleted).ToList();
-
-                foreach (var user in users)
-                {
-                    user.Active = false;
-                    user.Deleted = true;
-                    user.ModifiedBy = 1;
-                    user.ModifiedDate = DateTime.UtcNow;
-                }
-
-                _userRepo.SaveUsers(users);
-                _logger.Information("Completed DeleteDemoUsers");
+                _logger.Information("Started ResetDemo");
+                _userRepo.ResetDemoDB();
+                _logger.Information("Completed ResetDemo");
             }
             catch (Exception ex)
             {
                 result = false;
-                _logger.Error(ex, "DeleteDemoUsers");
+                _logger.Error(ex, "ResetDemo");
             }
 
             return result;

@@ -49,8 +49,9 @@ namespace GameStatsAppImport
             {
                 _logger.Information("Started Init");
                 var connString = _config.GetSection("ConnectionStrings").GetSection("DBConnectionString").Value;
+                var demoConnString = _config.GetSection("ConnectionStrings").GetSection("DemoDBConnectionString").Value;
                 var maxBulkRows = Convert.ToInt32(_config.GetSection("AppSettings").GetSection("MaxBulkRows").Value);
-                NPocoBootstrapper.Configure(connString, maxBulkRows);
+                NPocoBootstrapper.Configure(connString, demoConnString, maxBulkRows);
 
                 var sqlMinDateTime = (DateTime)SqlDateTime.MinValue;
                 var currDateUtc = DateTime.UtcNow;
@@ -93,7 +94,7 @@ namespace GameStatsAppImport
 
             if (result)
             {
-                result = _userService.DeleteDemoUsers();
+                result = _userService.ResetDemo();
             }
 
             var currDateUtc = DateTime.UtcNow;

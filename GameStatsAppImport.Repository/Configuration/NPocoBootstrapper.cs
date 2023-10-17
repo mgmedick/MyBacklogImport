@@ -9,13 +9,18 @@ namespace GameStatsAppImport.Repository.Configuration
 {
     public static class NPocoBootstrapper
     {
-        public static void Configure(string connectionString, int maxBulkRows)
+        public static void Configure(string connectionString, string demoConnectionString, int maxBulkRows)
         {
             var fluentConfig = FluentMappingConfiguration.Configure(new Repository.DataMappings());
 
             BaseRepository.DBFactory = DatabaseFactory.Config(i =>
             {
                 i.UsingDatabase(() => new Database(connectionString, DatabaseType.MySQL, MySqlClientFactory.Instance, System.Data.IsolationLevel.ReadUncommitted));
+                i.WithFluentConfig(fluentConfig);
+            });
+            BaseRepository.DemoDBFactory = DatabaseFactory.Config(i =>
+            {
+                i.UsingDatabase(() => new Database(demoConnectionString, DatabaseType.MySQL, MySqlClientFactory.Instance, System.Data.IsolationLevel.ReadUncommitted));
                 i.WithFluentConfig(fluentConfig);
             });
             BaseRepository.MaxBulkRows = maxBulkRows;

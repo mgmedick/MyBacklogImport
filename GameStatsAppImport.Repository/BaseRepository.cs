@@ -9,6 +9,7 @@ namespace GameStatsAppImport.Repository
     public abstract class BaseRepository
     {
         public static DatabaseFactory DBFactory { get; set; }
+        public static DatabaseFactory DemoDBFactory { get; set; }
         public static int MaxBulkRows { get; set; }
     }
 }

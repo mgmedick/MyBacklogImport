@@ -5,6 +5,6 @@ namespace GameStatsAppImport.Interfaces.Services
 {
     public interface IUserService
     {
-        bool DeleteDemoUsers();
+        bool ResetDemo();
     }
 }

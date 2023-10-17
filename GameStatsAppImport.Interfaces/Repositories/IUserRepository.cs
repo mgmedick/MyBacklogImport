@@ -10,6 +10,7 @@ namespace GameStatsAppImport.Interfaces.Repositories
     {
         IEnumerable<User> GetUsers(Expression<Func<User, bool>>  predicate);
         void SaveUsers(IEnumerable<User> users);
+        void ResetDemoDB();
     }
 }
 
