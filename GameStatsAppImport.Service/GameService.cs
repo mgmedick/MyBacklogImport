@@ -175,7 +175,7 @@ namespace GameStatsAppImport.Service
                 _gameRepo.SaveGames(games);
             }
 
-            ProcessGameCoverImages(games);
+            //ProcessGameCoverImages(games);
             _logger.Information("Completed SaveGames");
         }
 
@@ -295,24 +295,27 @@ namespace GameStatsAppImport.Service
 
                     if (!File.Exists(destFilePath))
                     {
-                        var tempFilePath = Path.Combine(TempImportPath, fileName);
-                        try
+                        var tempFilePath = Path.Combine(BaseService.TempImportPath, fileName);
+                        if (!File.Exists(tempFilePath))
                         {
-                            using (var response = await client.GetAsync(game.CoverImageUrl))
+                            try
                             {
-                                response.EnsureSuccessStatusCode();
-                                using (var fs = new FileStream(tempFilePath, FileMode.CreateNew))
+                                using (var response = await client.GetAsync(game.CoverImageUrl))
                                 {
-                                    await response.Content.CopyToAsync(fs);
+                                    response.EnsureSuccessStatusCode();
+                                    using (var fs = new FileStream(tempFilePath, FileMode.CreateNew))
+                                    {
+                                        await response.Content.CopyToAsync(fs);
+                                    }
                                 }
+                                Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
                             }
-                            Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.PullDelayMS));
-                        }
-                        catch (Exception ex)
-                        {
-                            Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
-                            _logger.Information(ex, "GetGameCoverImages");
-                            tempFilePath = null;
+                            catch (Exception ex)
+                            {
+                                Thread.Sleep(TimeSpan.FromMilliseconds(BaseService.ErrorPullDelayMS));
+                                _logger.Information(ex, "GetGameCoverImages");
+                                tempFilePath = null;
+                            }
                         }
 
                         if (!string.IsNullOrWhiteSpace(tempFilePath) && !tempGameCoverPaths.ContainsKey(game.ID))
@@ -363,7 +366,7 @@ namespace GameStatsAppImport.Service
 
         public void ClearTempFolder()
         {
-            var di = new DirectoryInfo(TempImportPath);
+            var di = new DirectoryInfo(BaseService.TempImportPath);
             foreach (FileInfo file in di.GetFiles())
             {
                 file.Delete();
