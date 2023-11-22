@@ -429,6 +429,45 @@ namespace GameStatsAppImport.Service
 
             return result;
         }
+
+        public async Task<bool> RefreshCacheDemo(DateTime lastImportDateUtc)
+        {
+            _logger.Information("Started RefreshCacheDemo: {@LastImportDateUtc}", lastImportDateUtc);
+
+            var result = false;
+            var hashKey = _config.GetSection("SiteSettings").GetSection("HashKey").Value;
+            var token = lastImportDateUtc.ToString().GetHMACSHA256Hash(hashKey);
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://demo.mybacklog.io/Home/RefreshCache");
+
+                var parameters = new Dictionary<string, object> {
+                    {"token", token}
+                };
+                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+
+                using (var response = await client.SendAsync(request))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var dataString = await response.Content.ReadAsStringAsync();
+                        var data = JObject.Parse(dataString);
+
+                        if (data != null)
+                        {
+                            result = (bool)data.GetValue("success");
+                        }
+                    }
+                }
+            }
+
+            _logger.Information("Completed RefreshCacheDemo");
+
+            return result;
+        }
     }
 }
  
