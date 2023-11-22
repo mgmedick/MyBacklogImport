@@ -94,6 +94,11 @@ namespace GameStatsAppImport
 
             if (result)
             {
+                result = await _gameService.RefreshCache(GameLastImportDateUtc);
+            }
+
+            if (result)
+            {
                 result = _userService.ResetDemo();
             }
 

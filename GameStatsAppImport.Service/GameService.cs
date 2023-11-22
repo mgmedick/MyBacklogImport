@@ -6,7 +6,6 @@ using GameStatsAppImport.Model.Data;
 using GameStatsAppImport.Common;
 using System.Collections.Generic;
 using Serilog;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using Newtonsoft.Json;
@@ -16,9 +15,8 @@ using Newtonsoft.Json.Linq;
 using System.Threading;
 using System.Linq;
 using System.IO;
-using Microsoft.AspNetCore.Http;
-using GameStatsAppImport.Repository;
-using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Extensions.Configuration;
+using GameStatsAppImport.Common.Extensions;
 
 namespace GameStatsAppImport.Service
 {
@@ -26,12 +24,14 @@ namespace GameStatsAppImport.Service
     {
         private readonly IGameRepository _gameRepo = null;
         private readonly ISettingService _settingService = null;
+        private readonly IConfiguration _config = null;
         private readonly ILogger _logger = null;
 
-        public GameService(IGameRepository gameRepo, ISettingService settingService, ILogger logger)
+        public GameService(IGameRepository gameRepo, ISettingService settingService, IConfiguration config, ILogger logger)
         {
             _gameRepo = gameRepo;
             _settingService = settingService;
+            _config = config;
             _logger = logger;
         }
 
@@ -389,6 +389,45 @@ namespace GameStatsAppImport.Service
             _gameRepo.UpdateGameCoverImages(games);
 
             _logger.Information("Completed SaveGameCoverImages");
+        }
+
+        public async Task<bool> RefreshCache(DateTime lastImportDateUtc)
+        {
+            _logger.Information("Started RefreshCache: {@LastImportDateUtc}", lastImportDateUtc);
+
+            var result = false;
+            var hashKey = _config.GetSection("SiteSettings").GetSection("HashKey").Value;
+            var token = lastImportDateUtc.ToString().GetHMACSHA256Hash(hashKey);
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://mybacklog.io/Home/RefreshCache");
+
+                var parameters = new Dictionary<string, object> {
+                    {"token", token}
+                };
+                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+
+                using (var response = await client.SendAsync(request))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var dataString = await response.Content.ReadAsStringAsync();
+                        var data = JObject.Parse(dataString);
+
+                        if (data != null)
+                        {
+                            result = (bool)data.GetValue("success");
+                        }
+                    }
+                }
+            }
+
+            _logger.Information("Completed RefreshCache");
+
+            return result;
         }
     }
 }
