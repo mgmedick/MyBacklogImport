@@ -396,7 +396,7 @@ namespace GameStatsAppImport.Service
             _logger.Information("Started RefreshCache: {@LastImportDateUtc}", lastImportDateUtc);
 
             var result = false;
-            var hashKey = _config.GetSection("SiteSettings").GetSection("HashKey").Value;
+            var hashKey = _config.GetSection("AppSettings").GetSection("HashKey").Value;
             var token = lastImportDateUtc.ToString().GetHMACSHA256Hash(hashKey);
 
             using (HttpClient client = new HttpClient())
@@ -435,7 +435,7 @@ namespace GameStatsAppImport.Service
             _logger.Information("Started RefreshCacheDemo: {@LastImportDateUtc}", lastImportDateUtc);
 
             var result = false;
-            var hashKey = _config.GetSection("SiteSettings").GetSection("HashKey").Value;
+            var hashKey = _config.GetSection("AppSettings").GetSection("HashKey").Value;
             var token = lastImportDateUtc.ToString().GetHMACSHA256Hash(hashKey);
 
             using (HttpClient client = new HttpClient())
