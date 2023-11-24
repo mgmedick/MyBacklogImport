@@ -97,14 +97,15 @@ namespace GameStatsAppImport
                 result = _userService.ResetDemo();
             }
 
+            var lastImportDate = _settingService.GetSetting("GameLastImportDate")?.Dte ?? (DateTime)SqlDateTime.MinValue;
             if (result)
             {
-                result = await _gameService.RefreshCache(GameLastImportDateUtc);
+                result = await _gameService.RefreshCache(lastImportDate);
             }
 
             if (result)
             {
-                result = await _gameService.RefreshCacheDemo(GameLastImportDateUtc);
+                result = await _gameService.RefreshCacheDemo(lastImportDate);
             }
 
             var currDateUtc = DateTime.UtcNow;
