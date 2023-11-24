@@ -403,12 +403,11 @@ namespace GameStatsAppImport.Service
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://mybacklog.io/Home/RefreshCache");
-
-                var parameters = new Dictionary<string, object> {
+                var parameters = new Dictionary<string, string> {
                     {"token", token}
                 };
-                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://mybacklog.io/Home/RefreshCache") { Content = new FormUrlEncodedContent(parameters) };
+
 
                 using (var response = await client.SendAsync(request))
                 {
@@ -442,12 +441,10 @@ namespace GameStatsAppImport.Service
             {
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                var request = new HttpRequestMessage(HttpMethod.Post, "https://demo.mybacklog.io/Home/RefreshCache");
-
-                var parameters = new Dictionary<string, object> {
+                var parameters = new Dictionary<string, string> {
                     {"token", token}
                 };
-                request.Content = new StringContent(JsonConvert.SerializeObject(parameters), Encoding.UTF8, "application/json");
+                var request = new HttpRequestMessage(HttpMethod.Post, "https://demo.mybacklog.io/Home/RefreshCache") { Content = new FormUrlEncodedContent(parameters) };
 
                 using (var response = await client.SendAsync(request))
                 {
