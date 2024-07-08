@@ -63,7 +63,7 @@ namespace GameStatsAppImport.Service
                         results.ClearMemory();
                     }
                 }
-                while (games.Count == BaseService.MaxPageLimit && (isFullLoad || games.Min(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime) > lastImportDateUtc));                
+                while (games.Count == BaseService.MaxPageLimit && (isFullLoad ||  games.Min(i => DateTimeOffset.FromUnixTimeSeconds(i.created_at).UtcDateTime) > lastImportDateUtc));                
                 //while (1 == 0);
 
                 if (!isFullLoad)
@@ -109,7 +109,7 @@ namespace GameStatsAppImport.Service
                     {"offset", offset.ToString() + ";"}
                 };
 
-                var paramString = string.Join(" ", parameters.Select(i => i.Key + " " + i.Value).ToList());
+                var paramString = string.Join(" ", parameters.Select(i => i.Key + "=" + i.Value).ToList());
                 request.Content = new StringContent(paramString, Encoding.UTF8, "application/json");
 
                 try
